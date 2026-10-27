@@ -12,4 +12,9 @@ dist/
 *.tfplan
 .env
 runtime/
+entregas/
+evidencias/
+infra/generated/
+tools/
+Entrega_Completa.zip
 

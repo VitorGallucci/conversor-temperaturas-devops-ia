@@ -142,7 +142,7 @@ PDF correspondente e anexos necessários. Consulte `LEIA-ME-ENTREGAS.md`.
 - https://docs.python.org/3/library/http.server.html
 - https://docs.pytest.org/en/stable/
 - https://console.groq.com/docs/api-reference
-- https://console.groq.com/docs/model/qwen/qwen3.8-27b
+- https://console.groq.com/docs/models
 - https://developer.hashicorp.com/terraform/language
 - https://docs.github.com/en/actions/concepts/security/github_token
 
