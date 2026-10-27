@@ -16,7 +16,11 @@ jobs:
         env:
           GROQCLOUD_API_KEY: ${{ secrets.GROQCLOUD_API_KEY }}
         run: python -m scripts.ai_improve
-      - run: python -m ruff check tests/test_ai_generated.py --fix && python -m ruff format tests/test_ai_generated.py
+      - name: Formatar e validar testes gerados
+        run: |
+          python -m ruff format tests/test_ai_generated.py
+          python -m ruff check tests/test_ai_generated.py --fix
+          python -m ruff format tests/test_ai_generated.py
       - run: python -m pytest --cov=conversor --cov-fail-under=90
       - name: Criar branch, commit e PR
         env:
