@@ -4,11 +4,14 @@
 
 ### 1. O que aconteceu quando o pipeline rodou? A IA bloqueou ou aprovou?
 
-O cenário saudável mede a cobertura completa e envia os dados ao modelo. O cenário de
-incidente executa somente os testes de referência, reduzindo a cobertura do módulo HTTP.
-As decisões efetivamente obtidas, modos, execuções e links são registrados em EVIDENCIAS.md
-e no relatório de Quality Gate. Uma execução em modo local não comprova chamada à IA.
-O gate combina a revisão da IA com limites mínimos verificáveis, e bloqueia em falhas de API.
+Na execução saudável #3, a IA real aprovou os seis gates. Na execução de incidente #4,
+bloqueou os seis e o workflow abriu as issues #11 a #16 automaticamente. O gate de testes
+usou 91,89% de cobertura na suíte completa; o cenário de baixa cobertura executou somente
+os casos de referência, reduzindo a cobertura do módulo HTTP e ficando abaixo do limiar de 90%.
+Os links e decisões estão em EVIDENCIAS.md e no relatório de Quality Gate.
+As primeiras tentativas revelaram erros de integração e de escopo do prompt, corrigidos
+antes das execuções finais. Elas não foram confundidas com aprovações da IA.
+O gate combina revisão da IA com limites mínimos verificáveis e bloqueia em falhas de API.
 
 ### 2. Desafio: provocar uma falha e observar a mudança de decisão
 
