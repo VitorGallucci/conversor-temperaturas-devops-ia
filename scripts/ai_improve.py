@@ -12,7 +12,7 @@ def main():
     core = Path("conversor/core.py").read_text(encoding="utf-8")
     tests = Path("tests/test_core.py").read_text(encoding="utf-8")
     payload = {
-        "model": os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant"),
+        "model": os.environ.get("GROQ_MODEL", "qwen/qwen3.8-27b"),
         "temperature": 0,
         "response_format": {"type": "json_object"},
         "messages": [

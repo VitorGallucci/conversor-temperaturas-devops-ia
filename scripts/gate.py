@@ -52,7 +52,7 @@ def ask_ai(kind, data, reasons):
         "Nunca aprove quando mandatory_failures não estiver vazio. Sugira testes pertinentes."
     )
     payload = {
-        "model": os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant"),
+        "model": os.environ.get("GROQ_MODEL", "qwen/qwen3.8-27b"),
         "temperature": 0,
         "response_format": {"type": "json_object"},
         "messages": [

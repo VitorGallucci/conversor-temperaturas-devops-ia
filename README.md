@@ -93,7 +93,7 @@ Rode novamente a suíte completa para restaurar o relatório de cobertura alta.
    Não faz merge nem executa Python arbitrário retornado pelo modelo.
 
 O secret do repositório é `GROQCLOUD_API_KEY`. Nunca coloque seu valor no código.
-O modelo padrão é `llama-3.1-8b-instant`; `GROQ_MODEL` permite alterá-lo.
+O modelo padrão é `qwen/qwen3.8-27b`; `GROQ_MODEL` permite alterá-lo.
 O modo `local` é uma simulação determinística, sem chamada a IA.
 API indisponível, chave ausente, JSON inválido ou contrato inválido bloqueiam o gate.
 A IA não pode liberar uma violação das regras mínimas.
@@ -142,7 +142,7 @@ PDF correspondente e anexos necessários. Consulte `LEIA-ME-ENTREGAS.md`.
 - https://docs.python.org/3/library/http.server.html
 - https://docs.pytest.org/en/stable/
 - https://console.groq.com/docs/api-reference
-- https://console.groq.com/docs/model/llama-3.1-8b-instant
+- https://console.groq.com/docs/model/qwen/qwen3.8-27b
 - https://developer.hashicorp.com/terraform/language
 - https://docs.github.com/en/actions/concepts/security/github_token
 
