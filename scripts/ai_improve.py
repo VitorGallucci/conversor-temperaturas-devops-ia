@@ -3,8 +3,9 @@
 import json
 import math
 import os
-import urllib.request
 from pathlib import Path
+
+from scripts.groq_client import completion
 
 
 def main():
@@ -14,6 +15,7 @@ def main():
     payload = {
         "model": os.environ.get("GROQ_MODEL", "qwen/qwen3.8-27b"),
         "temperature": 0,
+        "max_completion_tokens": 1600,
         "response_format": {"type": "json_object"},
         "messages": [
             {
@@ -29,17 +31,7 @@ def main():
             {"role": "user", "content": json.dumps({"source": core, "tests": tests})},
         ],
     }
-    req = urllib.request.Request(
-        "https://api.groq.com/openai/v1/chat/completions",
-        data=json.dumps(payload).encode(),
-        headers={
-            "Authorization": f"Bearer {key}",
-            "Content-Type": "application/json",
-            "User-Agent": "termo-devops/1.0",
-        },
-    )
-    with urllib.request.urlopen(req, timeout=45) as response:
-        answer = json.loads(json.load(response)["choices"][0]["message"]["content"])
+    answer = completion(payload, key)
     cases = answer["cases"]
     if not isinstance(cases, list) or not 1 <= len(cases) <= 20:
         raise ValueError("Quantidade de casos inválida")

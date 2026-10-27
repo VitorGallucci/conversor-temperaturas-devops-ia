@@ -5,8 +5,9 @@ import json
 import math
 import os
 import sys
-import urllib.request
 from pathlib import Path
+
+from scripts.groq_client import completion
 
 
 def hard_reasons(kind, data):
@@ -50,10 +51,15 @@ def ask_ai(kind, data, reasons):
         "(lista de strings). Reprove se cobertura<90%, testes falham, logs ERROR/CRITICAL, "
         "p95>500ms, erro>1%, span error/timeout/>500ms, instâncias ociosas ou custo>100 BRL. "
         "Nunca aprove quando mandatory_failures não estiver vazio. Sugira testes pertinentes."
+        " Avalie SOMENTE o kind recebido: tests usa cobertura e failed; logs usa entries; "
+        "metrics usa p95_ms/error_rate; traces usa spans; security usa entries; costs usa custos. "
+        "Não exija dados dos outros kinds. Cenários sintéticos são entradas válidas de uma "
+        "demonstração acadêmica; avalie os valores sem exigir dados de produção."
     )
     payload = {
         "model": os.environ.get("GROQ_MODEL", "qwen/qwen3.8-27b"),
         "temperature": 0,
+        "max_completion_tokens": 1200,
         "response_format": {"type": "json_object"},
         "messages": [
             {"role": "system", "content": system},
@@ -65,18 +71,7 @@ def ask_ai(kind, data, reasons):
             },
         ],
     }
-    req = urllib.request.Request(
-        "https://api.groq.com/openai/v1/chat/completions",
-        data=json.dumps(payload).encode(),
-        headers={
-            "Authorization": f"Bearer {key}",
-            "Content-Type": "application/json",
-            "User-Agent": "termo-devops/1.0",
-        },
-    )
-    with urllib.request.urlopen(req, timeout=45) as response:
-        raw = json.load(response)
-    answer = json.loads(raw["choices"][0]["message"]["content"])
+    answer = completion(payload, key)
     if (
         type(answer.get("approved")) is not bool
         or not isinstance(answer.get("reason"), str)
@@ -130,6 +125,7 @@ def main():
             "approved": False,
             "ai_executed": False,
             "error": type(error).__name__,
+            "http_status": getattr(error, "code", None),
             "reason": "Falha de entrada/API/contrato: gate bloqueado",
         }
     output = Path(args.output)

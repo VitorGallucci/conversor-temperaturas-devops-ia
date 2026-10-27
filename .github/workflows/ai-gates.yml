@@ -18,6 +18,7 @@ jobs:
   analyze:
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         kind: [tests, logs, metrics, traces, security, costs]
     runs-on: ubuntu-latest
