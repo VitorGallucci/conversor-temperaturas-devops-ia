@@ -68,7 +68,11 @@ def ask_ai(kind, data, reasons):
     req = urllib.request.Request(
         "https://api.groq.com/openai/v1/chat/completions",
         data=json.dumps(payload).encode(),
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        headers={
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json",
+            "User-Agent": "termo-devops/1.0",
+        },
     )
     with urllib.request.urlopen(req, timeout=45) as response:
         raw = json.load(response)
