@@ -1,0 +1,9 @@
+{
+  "entries": [
+    {
+      "level": "CRITICAL",
+      "message": "Achado simulado de segurança"
+    }
+  ],
+  "provenance": "Cenário sintético didático; não é medição de produção"
+}

@@ -1,0 +1,9 @@
+{
+  "entries": [
+    {
+      "level": "CRITICAL",
+      "message": "Falha interna no conversor"
+    }
+  ],
+  "provenance": "Cenário sintético didático; não é medição de produção"
+}

@@ -1,0 +1,26 @@
+name: CI - testes, linter e build
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m ruff check .
+      - run: python -m ruff format --check .
+      - run: python -m pytest --cov=conversor --cov-branch --cov-report=term-missing --cov-report=json:build/coverage.json --cov-report=html:build/htmlcov --cov-fail-under=90 --junitxml=build/junit.xml
+      - run: python -m scripts.build
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencias-ci
+          path: |
+            build/
+            dist/
+

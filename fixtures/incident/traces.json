@@ -1,0 +1,10 @@
+{
+  "spans": [
+    {
+      "name": "convert",
+      "status": "timeout",
+      "duration_ms": 4200
+    }
+  ],
+  "provenance": "Cenário sintético didático; não é medição de produção"
+}

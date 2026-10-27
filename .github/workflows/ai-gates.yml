@@ -1,0 +1,70 @@
+name: IA - quality gate e observabilidade
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [real, local]
+        default: real
+        description: 'real exige secret Groq; local é simulação por regras'
+      scenario:
+        type: choice
+        options: [healthy, incident]
+        default: healthy
+permissions:
+  contents: read
+  issues: write
+jobs:
+  analyze:
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: [tests, logs, metrics, traces, security, costs]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Medir testes reais
+        if: matrix.kind == 'tests'
+        run: |
+          mkdir -p build
+          if [ "$SCENARIO" = incident ]; then
+            python -m pytest tests/test_core.py -k 'reference_values' --cov=conversor --cov-branch --cov-report=json:build/coverage.json --junitxml=build/junit.xml
+          else
+            python -m pytest --cov=conversor --cov-branch --cov-report=json:build/coverage.json --junitxml=build/junit.xml
+          fi
+          python -m scripts.coverage_input
+        env:
+          SCENARIO: ${{ inputs.scenario }}
+      - name: Executar gate
+        id: gate
+        continue-on-error: true
+        env:
+          GROQCLOUD_API_KEY: ${{ secrets.GROQCLOUD_API_KEY }}
+          MODE: ${{ inputs.mode }}
+          SCENARIO: ${{ inputs.scenario }}
+          KIND: ${{ matrix.kind }}
+        run: |
+          FILE="fixtures/$SCENARIO/$KIND.json"
+          if [ "$KIND" = tests ]; then FILE=build/tests-input.json; fi
+          python -m scripts.gate "$KIND" "$FILE" --mode "$MODE" --output build/decision.json
+      - name: Abrir issue em bloqueio com evidência
+        if: steps.gate.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          KIND: ${{ matrix.kind }}
+          MODE: ${{ inputs.mode }}
+        run: gh issue create --title "[$MODE] Gate bloqueado - $KIND - run $GITHUB_RUN_ID" --body-file build/decision.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate-${{ matrix.kind }}
+          path: build/
+      - name: Bloquear etapa seguinte
+        if: steps.gate.outcome == 'failure'
+        run: exit 1
+

@@ -1,0 +1,6 @@
+{
+  "requests": 100,
+  "p95_ms": 20,
+  "error_rate": 0,
+  "provenance": "Cenário sintético didático; não é medição de produção"
+}
